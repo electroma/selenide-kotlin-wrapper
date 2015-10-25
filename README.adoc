@@ -1,0 +1,46 @@
+== DSL to simplify Selenide Test scenarios creation in Kolin language
+
+Motivation: replace Groovy-based http://www.gebish.org/[GEB] builders
+with typed https://kotlinlang.org/docs/reference/type-safe-builders.html[Kotlin DSL]
+
+Why not to use Geb builders?
+
+* Groovy future is not clear
+* Type safety helps even in tests (closure annotations are not enough + Geb is based on methodMissing)
+* Compilation time matters
+
+Features:
+
+* Concise syntax
+* Code completion simply works (at least in Idea)
+* Integrated https://github.com/google/truth[Truth]-based https://github.com/spockframework/spock[Spock]-like checks
+* Page and module objects with lazy evaluation
+
+Example scenario code:
+[source,kotlin]
+----
+    goto(HomePage()) {
+        searchFor("Kotlin")
+        verify("Suggestions appear and contain Island").waitForCheck {
+            that(suggestions).containsAllOf("Kotlin", "Kotlin Island")
+        }
+        submitSearch()
+    }
+    at(WikiMultiPage("Kotlin")) {
+        verify("There are several results, including island and language")
+                .that(results.topics)
+                .containsAllOf("Kotlin Island", "Kotlin (programming language)")
+        results["Kotlin (programming language)"]!!.click()
+    }
+----
+
+Example module:
+
+[source,kotlin]
+----
+class SearchResults(override val rootSupplier: () -> SelenideElement) : Module {
+    private val resultLinks by eq { root.findAll("a") }
+    val topics by eq { resultLinks.map { it.title() } }
+    operator fun get(title: String) = resultLinks.find { it.title() == title }
+}
+----

@@ -1,7 +1,7 @@
-== DSL to simplify Selenide Test scenarios creation in Kolin language
+== DSL to simplify Selenide Test scenarios creation in Kotlin language
 
 Motivation: replace Groovy-based http://www.gebish.org/[GEB] builders
-with typed https://kotlinlang.org/docs/reference/type-safe-builders.html[Kotlin DSL]
+with http://selenide.org/[Selenide]-based typed https://kotlinlang.org/docs/reference/type-safe-builders.html[Kotlin DSL]
 
 Why not to use Geb builders?
 
